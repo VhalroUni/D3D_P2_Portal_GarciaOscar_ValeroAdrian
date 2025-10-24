@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     Vector3 l_Position;
     Quaternion m_StartRotation;
     public Camera m_Camera;
-    public 
+    public
 
 
     bool m_AngleLocked = false;
@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_JumpKeycode = KeyCode.Space;
     public KeyCode m_RunKeycode = KeyCode.LeftShift;
     public KeyCode m_GetDamage = KeyCode.K;
-    public MouseButton m_BluePortal= MouseButton.Left;
+    public MouseButton m_BluePortal = MouseButton.Left;
     public MouseButton m_OrangePortal = MouseButton.Right;
 
     [Header("Debug Input")]
@@ -53,9 +53,13 @@ public class PlayerController : MonoBehaviour
     public AnimationClip m_ShootAnimationClip;
     public AnimationClip m_IdleAnimationClip;
 
+    [Header("Portal")]
+    public float m_PortalDistance = 3f;
+    public float m_MaxAngleToTeleport = 75f;
+    Vector3 m_MovementDirection;
+
     void Start()
     {
-
         Cursor.lockState = CursorLockMode.Locked;
     }
     void Update()
@@ -97,6 +101,7 @@ public class PlayerController : MonoBehaviour
             l_SpeedMultiplier = m_SpeedMultiplier;
 
         l_Movement.Normalize();
+        m_MovementDirection = l_Movement;
         l_Movement *= m_Speed * l_SpeedMultiplier * Time.deltaTime;
 
         m_VerticalSpeed = m_VerticalSpeed + Physics.gravity.y * Time.deltaTime;
@@ -112,5 +117,39 @@ public class PlayerController : MonoBehaviour
         else if (m_VerticalSpeed > 0.0f && (l_CollisionFlags & CollisionFlags.Above) != 0)
             m_VerticalSpeed = 0.0f;
     }
-  
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Portal"))
+        {
+            Portal l_Portal = other.GetComponent<Portal>();
+            if (CanTeleport(l_Portal))
+            {
+                Teleport(l_Portal);
+            }
+        }
+    }
+    bool CanTeleport(Portal _Portal)
+    {
+        float l_DotValue = Vector3.Dot(_Portal.transform.forward, -m_MovementDirection);
+        return l_DotValue > Mathf.Cos(m_MaxAngleToTeleport * Mathf.Deg2Rad);
+    }
+
+    void Teleport(Portal _Portal)
+    {
+        Vector3 l_NextPosition = transform.position + m_MovementDirection * m_PortalDistance;
+        Vector3 l_LocalPosition = _Portal.m_OtherPortalTransform.InverseTransformPoint(l_NextPosition);
+        Vector3 l_WorldPosition = _Portal.m_MirrorPortal.transform.InverseTransformPoint(l_LocalPosition);
+
+        Vector3 l_WorldForward = transform.forward;
+        Vector3 l_LocalForward = _Portal.m_OtherPortalTransform.InverseTransformDirection(l_WorldPosition);
+        l_WorldForward = _Portal.m_MirrorPortal.transform.TransformDirection(l_LocalForward);
+
+        m_CharacterController.enabled = false;
+        transform.position = l_WorldPosition;
+        transform.rotation = Quaternion.LookRotation(l_WorldForward);
+        m_Yaw = transform.rotation.eulerAngles.y;
+        m_CharacterController.enabled = true;
+
+    }
 }
