@@ -770,9 +770,9 @@ MonoBehaviour:
   m_CharacterController: {fileID: 832577318}
   m_Camera: {fileID: 963194227}
   m_AngleLocked: 0
-  m_Speed: 10
-  m_JumpSpeed: 12
-  m_SpeedMultiplier: 1.2
+  m_Speed: 6
+  m_JumpSpeed: 6
+  m_SpeedMultiplier: 2
   m_LeftKeycode: 97
   m_RightKeycode: 100
   m_UpKeycode: 119
