@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Portal : MonoBehaviour
 {
@@ -9,6 +10,11 @@ public class Portal : MonoBehaviour
     public Portal m_MirrorPortal;
     public float m_NearCameraOffset = 0.5f;
     public List<Transform> m_ValidPositions;
+
+    [Header("Validation")]
+    public float m_ValidDistanceOffset = 0.15f;
+    public LayerMask m_ValidPortalLayerMask;
+    public float m_MaxAnglePermited = 0.5f;
 
 
     public void LateUpdate()
@@ -25,40 +31,76 @@ public class Portal : MonoBehaviour
         m_MirrorPortal.m_Camera.nearClipPlane = l_DisatnceToPortal + m_NearCameraOffset;
     }
 
-    //public bool InitialPosition(Vector3 _Postion, Vector3 _Normal)
-    //{
-    //    transform.position = _Postion;
+    public bool IsValidPosition(Vector3 Position, Vector3 Normal)
+    {
+        gameObject.SetActive(true);
+        transform.position = Position;
+        transform.rotation = Quaternion.LookRotation(Normal);
+        bool l_Valid = true;
 
-    //    for (int i = 0; i < m_ValidPoints.Count; i++)
-    //    {
-    //        Vector3 l_ValidPosition = m_ValidPoints[i].position;
-    //        Vector3 l_Direction = m_ValidPoints - l_CameraPosition;
-    //        float l_Distance = Vector3.Distance(m_ValidPoints, l_CameraPosition);
-    //        l_Direction.Normalize();
-    //        l_Direction /= l_Distance;
-    //        Ray l_Ray = new Ray(l_CameraPosition, l_Direction);
+        Vector3 l_CameraPosition = Camera.main.transform.position;
+        for (int i = 0; i < m_ValidPositions.Count; i++)
+        {
+            Vector3 l_ValidPosition = m_ValidPositions[i].position;
+            Vector3 l_Direction = l_ValidPosition - l_CameraPosition;
+            float l_Distance = Vector3.Distance(l_ValidPosition, l_CameraPosition);
+            l_Direction /= l_Distance;
+            Ray l_Ray = new Ray(l_CameraPosition, l_Direction);
+            if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, l_Distance + m_ValidDistanceOffset, m_ValidPortalLayerMask.value, QueryTriggerInteraction.Ignore))
+            {
+                if (l_RaycastHit.collider.CompareTag("DrawableWall"))
+                {
+                    if (Vector3.Distance(l_RaycastHit.point, l_ValidPosition) < m_ValidDistanceOffset)
+                    {
+                        float l_DotAngle = Vector3.Dot(l_RaycastHit.normal, m_ValidPositions[i].forward);
+                        if (l_DotAngle < Mathf.Cos(m_MaxAnglePermited * Mathf.Deg2Rad))
+                            l_Valid = false;
+                    }
+                    else
+                        l_Valid = false;
+                }
+                else
+                    l_Valid = false;
+            }
+            l_Valid = false;
+        }
+        return l_Valid;
+    }
 
-    //        if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, l_Distance + m_ValidDistanceOffset, m_ValidPortalLayerMask.value, ))
-    //        {
-    //            if (l_RaycastHit.collider.CompareTag("DrawableWall"))
-    //            {
-    //                if (Vector3.Distance(RayCastHit.point, l_ValidPosition))
-    //                {
-    //                    float l_DotValue = Vector3.Dot(l_RaycastHit.normal, m_ValidPoints[i].forward);
-    //                    if (l_DotAngle.Mathf.Cos(m_MaxAnglePermitted * Mathf.Deg2Rad))
-    //                    {
-    //                        return true;
-    //                    }
-    //                }
-    //                else
-    //                    return false;
-    //            }
-    //            else
-    //                return false;
-    //        }
-    //        else
-    //            return false;
-    //    }
-    //}
+    public bool InitialPosition(Vector3 _Postion, Vector3 _Normal)
+    {
+        transform.position = _postion;
+
+        for (int i = 0; i < m_ValidPositions.Count; i++)
+        {
+            Vector3 l_Validposition = m_ValidPositions[i].position;
+            Vector3 l_Direction = m_Validpoints - l_cameraposition;
+            float l_Distance = vector3.distance(m_validpoints, l_cameraposition);
+            l_Direction.normalize();
+            l_Direction /= l_Distance;
+            Ray l_ray = new Ray(l_CameraPosition, l_Direction);
+
+            if (physics.raycast(l_ray, out raycasthit l_raycasthit, l_Distance + m_validdistanceoffset, m_validportallayermask.value, ))
+            {
+                if (l_raycasthit.collider.comparetag("drawablewall"))
+                {
+                    if (vector3.distance(raycasthit.point, l_validposition))
+                    {
+                        float l_dotvalue = Vector3.dot(l_raycasthit.normal, m_validpoints[i].forward);
+                        if (l_dotangle.mathf.cos(m_maxanglepermitted * mathf.deg2rad))
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+    }
 
 }
