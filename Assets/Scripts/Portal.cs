@@ -21,7 +21,7 @@ public class Portal : MonoBehaviour
     {
         Vector3 l_WorldPosition = Camera.main.transform.position;
         Vector3 l_LocalPosition = m_OtherPortalTransform.InverseTransformPoint(l_WorldPosition);
-        m_MirrorPortal.m_Camera.transform.position = m_MirrorPortal.transform.InverseTransformPoint(l_LocalPosition);
+        m_MirrorPortal.m_Camera.transform.position = m_MirrorPortal.transform.TransformPoint(l_LocalPosition);
 
         Vector3 l_WorldForward = Camera.main.transform.forward;
         Vector3 l_LocalForward = m_OtherPortalTransform.InverseTransformDirection(l_WorldForward);
@@ -66,41 +66,4 @@ public class Portal : MonoBehaviour
         }
         return l_Valid;
     }
-
-    public bool InitialPosition(Vector3 _Postion, Vector3 _Normal)
-    {
-        transform.position = _postion;
-
-        for (int i = 0; i < m_ValidPositions.Count; i++)
-        {
-            Vector3 l_Validposition = m_ValidPositions[i].position;
-            Vector3 l_Direction = m_Validpoints - l_cameraposition;
-            float l_Distance = vector3.distance(m_validpoints, l_cameraposition);
-            l_Direction.normalize();
-            l_Direction /= l_Distance;
-            Ray l_ray = new Ray(l_CameraPosition, l_Direction);
-
-            if (physics.raycast(l_ray, out raycasthit l_raycasthit, l_Distance + m_validdistanceoffset, m_validportallayermask.value, ))
-            {
-                if (l_raycasthit.collider.comparetag("drawablewall"))
-                {
-                    if (vector3.distance(raycasthit.point, l_validposition))
-                    {
-                        float l_dotvalue = Vector3.dot(l_raycasthit.normal, m_validpoints[i].forward);
-                        if (l_dotangle.mathf.cos(m_maxanglepermitted * mathf.deg2rad))
-                        {
-                            return true;
-                        }
-                    }
-                    else
-                        return false;
-                }
-                else
-                    return false;
-            }
-            else
-                return false;
-        }
-    }
-
 }

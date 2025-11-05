@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
     [Header("Attach Object")]
     public ForceMode m_ForceMode;
     public float m_ThrowForce = 10.0f;
-    public Rigidbody m_AttachedObjectRigidbody;
+    Rigidbody m_AttachedObjectRigidbody;
     public bool m_AttachingObject;
     public Transform m_GripTransform;
     Vector3 m_StartAttachingObjectPosition;
@@ -198,7 +198,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 l_NextPosition = transform.position + m_MovementDirection * m_PortalDistance;
         Vector3 l_LocalPosition = _Portal.m_OtherPortalTransform.InverseTransformPoint(l_NextPosition);
-        Vector3 l_WorldPosition = _Portal.m_MirrorPortal.transform.InverseTransformPoint(l_LocalPosition);
+        Vector3 l_WorldPosition = _Portal.m_MirrorPortal.transform.TransformPoint(l_LocalPosition);
 
         Vector3 l_WorldForward = transform.forward;
         Vector3 l_LocalForward = _Portal.m_OtherPortalTransform.InverseTransformDirection(l_WorldPosition);
