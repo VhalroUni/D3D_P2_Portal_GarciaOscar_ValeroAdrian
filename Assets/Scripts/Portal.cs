@@ -1,7 +1,5 @@
-using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 public class Portal : MonoBehaviour
 {
@@ -12,10 +10,9 @@ public class Portal : MonoBehaviour
     public List<Transform> m_ValidPositions;
 
     [Header("Validation")]
-    public float m_ValidDistanceOffset = 0.15f;
+    float m_ValidDistanceOffset = 0.15f;
     public LayerMask m_ValidPortalLayerMask;
-    public float m_MaxAnglePermited = 0.5f;
-
+    public float m_MaxAnglePermitted = 5.0f;
 
     public void LateUpdate()
     {
@@ -25,19 +22,20 @@ public class Portal : MonoBehaviour
 
         Vector3 l_WorldForward = Camera.main.transform.forward;
         Vector3 l_LocalForward = m_OtherPortalTransform.InverseTransformDirection(l_WorldForward);
-        m_MirrorPortal.m_Camera.transform.forward = m_MirrorPortal.transform.TransformDirection(l_LocalForward);
+        m_MirrorPortal.m_Camera.transform.forward = m_MirrorPortal.transform.InverseTransformDirection(l_LocalForward);
 
-        float l_DisatnceToPortal = Vector3.Distance(m_MirrorPortal.transform.position, m_MirrorPortal.m_Camera.transform.position);
+        float l_DisatnceToPortal = Vector3.Distance(m_MirrorPortal.transform.position,
+        m_MirrorPortal.m_Camera.transform.position);
         m_MirrorPortal.m_Camera.nearClipPlane = l_DisatnceToPortal + m_NearCameraOffset;
     }
 
     public bool IsValidPosition(Vector3 Position, Vector3 Normal)
     {
-        gameObject.SetActive(true);
+        gameObject.SetActive(false);
         transform.position = Position;
         transform.rotation = Quaternion.LookRotation(Normal);
-        bool l_Valid = true;
 
+        bool l_Valid = true;
         Vector3 l_CameraPosition = Camera.main.transform.position;
         for (int i = 0; i < m_ValidPositions.Count; i++)
         {
@@ -53,16 +51,25 @@ public class Portal : MonoBehaviour
                     if (Vector3.Distance(l_RaycastHit.point, l_ValidPosition) < m_ValidDistanceOffset)
                     {
                         float l_DotAngle = Vector3.Dot(l_RaycastHit.normal, m_ValidPositions[i].forward);
-                        if (l_DotAngle < Mathf.Cos(m_MaxAnglePermited * Mathf.Deg2Rad))
-                            l_Valid = false;
+                        if (l_DotAngle < Mathf.Cos(m_MaxAnglePermitted * Mathf.Deg2Rad))
+                        {
+                            l_Valid = true;
+                        }
                     }
                     else
+                    {
                         l_Valid = false;
+                    }
                 }
                 else
+                {
                     l_Valid = false;
+                }
             }
-            l_Valid = false;
+            else
+            {
+                l_Valid = false;
+            }
         }
         return l_Valid;
     }
