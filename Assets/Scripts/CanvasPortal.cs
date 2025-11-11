@@ -1,34 +1,56 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CanvasPortal : MonoBehaviour
+public class CanvasPortalNovato : MonoBehaviour
 {
-    public Image PortalImage;
-    public Camera Camera;
-    public float maxDistance = 6767f;
+    public Camera Camara;
+
+    public Image Img1;   
+    public Image Img2;   
+    public Image Img3;   
+    public Image Img4;   
+    public float Dist = 6767f;
     public Color ColorW = Color.white;
     public Color ColorR = Color.red;
 
+    public GameObject Portal1;
+    public GameObject Portal2;
+
     void Update()
     {
-        if (Camera == null || PortalImage == null) return;
+        if (Camara == null) return;
 
-        Ray ray = new Ray(Camera.transform.position, Camera.transform.forward);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, maxDistance))
+        Color elColor = ColorR;
+        Ray r = new Ray(Camara.transform.position, Camara.transform.forward);
+        RaycastHit h;
+
+        if (Physics.Raycast(r, out h, Dist))
         {
-            if (hit.collider.CompareTag("DrawableWall"))
+            if (h.collider.CompareTag("DrawableWall"))
             {
-                PortalImage.color = ColorW;
+                elColor = ColorW;
             }
             else
             {
-                PortalImage.color = ColorR;
+                elColor = ColorR;
             }
         }
         else
         {
-            PortalImage.color = ColorR;
+            elColor = ColorR;
         }
+
+        if (Img1 != null) Img1.color = elColor;
+        if (Img2 != null) Img2.color = elColor;
+        if (Img3 != null) Img3.color = elColor;
+        if (Img4 != null) Img4.color = elColor;
+
+        bool p1 = Portal1 != null && Portal1.activeSelf;
+        bool p2 = Portal2 != null && Portal2.activeSelf;
+
+        Img1.gameObject.SetActive(!p1 && !p2);
+        Img2.gameObject.SetActive(p1 && !p2);
+        Img3.gameObject.SetActive(!p1 && p2);
+        Img4.gameObject.SetActive(p1 && p2);
     }
 }

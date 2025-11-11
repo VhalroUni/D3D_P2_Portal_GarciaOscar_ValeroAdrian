@@ -64,6 +64,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: fbdea4cfb94761d40af0b9ece19ad2cf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 01acac35118f4df47bf3b2cd1163d471, type: 2}
+    - target: {fileID: 2300002, guid: fbdea4cfb94761d40af0b9ece19ad2cf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 01acac35118f4df47bf3b2cd1163d471, type: 2}
+    - target: {fileID: 2300006, guid: fbdea4cfb94761d40af0b9ece19ad2cf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 6257980dbbf3d394d93e1ff137e09f12, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -73,7 +85,7 @@ PrefabInstance:
       addedObject: {fileID: 5126181714483341557}
     - targetCorrespondingSourceObject: {fileID: 100004, guid: fbdea4cfb94761d40af0b9ece19ad2cf, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6190010195271311205}
+      addedObject: {fileID: 3464597424910217403}
   m_SourcePrefab: {fileID: 100100000, guid: fbdea4cfb94761d40af0b9ece19ad2cf, type: 3}
 --- !u!1 &4231650855592554452 stripped
 GameObject:
@@ -92,13 +104,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0b70e70bd99d404b976ae612af45b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PortalGate
-  m_Animation: {fileID: 0}
+  m_Animation: {fileID: 3464597424910217403}
   m_OpenAnimationClip: {fileID: 7400000, guid: 03feb72272eccef48b7a8878c4f980e2, type: 2}
   m_OpenedAnimationClip: {fileID: 7400000, guid: 8435932eb034f0b48a13cf50b6045982, type: 2}
   m_CloseAnimationClip: {fileID: 7400000, guid: 2dcf425ddac040240b08da689bbf831b, type: 2}
   m_ClosedAnimationClip: {fileID: 7400000, guid: fa835a2e54039234b81df9c38191d59e, type: 2}
   m_IsOpened: 0
---- !u!95 &6190010195271311205
+--- !u!95 &3464597424910217403
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0

@@ -234,7 +234,7 @@ public class PlayerController : MonoBehaviour
     }
     bool CanShoot()
     {
-        return m_AttachedObjectRigidbody == null;
+        return m_AttachedObjectRigidbody == null && !Input.GetKey(KeyCode.E);
     }
     private void Shoot(Portal _Portal)
     {
