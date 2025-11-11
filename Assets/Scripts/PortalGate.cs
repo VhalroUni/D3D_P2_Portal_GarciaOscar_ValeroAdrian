@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PortalGate : MonoBehaviour
 {
-    public Animation m_Animation;
+    public Animator m_Animation;
     public AnimationClip m_OpenAnimationClip;
     public AnimationClip m_OpenedAnimationClip;
     public AnimationClip m_CloseAnimationClip;

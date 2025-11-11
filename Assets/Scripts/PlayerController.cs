@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
+using UnityEngine.InputSystem.HID;
 using UnityEngine.Rendering.VirtualTexturing;
 using UnityEngine.SceneManagement;
 
@@ -74,13 +75,19 @@ public class PlayerController : MonoBehaviour
     public Portal m_BluePortal;
     public Portal m_OrangePortal;
 
+    [Header("Portal Size")]
+    public Vector3 m_MaxPortalScale = new Vector3(2f, 2f, 2f);
+    public Vector3 m_MinPortalScale = new Vector3(0.5f, 0.5f, 0.5f);
+    public Vector3 m_DefaultPortalScale = new Vector3(1f, 1f, 1f);
+    int m_scrollLevel = 0;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
     }
     void Update()
     {
-        SetIdleAnimation();
+        //SetIdleAnimation();
 
         float l_MouseX = Input.GetAxis("Mouse X");
         float l_MouseY = Input.GetAxis("Mouse Y");
@@ -135,13 +142,84 @@ public class PlayerController : MonoBehaviour
         else if (m_VerticalSpeed > 0.0f && (l_CollisionFlags & CollisionFlags.Above) != 0)
             m_VerticalSpeed = 0.0f;
 
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
         if ((CanShoot()))
         {
-            if (Input.GetMouseButtonDown(m_BlueShootMouseButton))
+            if (Input.GetMouseButton(m_BlueShootMouseButton))
+            {
+                if (scroll > 0f)
+                {
+                    m_scrollLevel++;
+                    if (m_scrollLevel > 1) { m_scrollLevel = 1; }
+
+                    if (m_scrollLevel == 1)
+                    {
+                        m_BluePortal.transform.localScale= m_MaxPortalScale;
+                    }
+                    if (m_scrollLevel == 0)
+                    {
+                        m_BluePortal.transform.localScale = m_DefaultPortalScale;
+                    }
+                }
+                else if (scroll < 0f)
+                {
+                    if (m_scrollLevel < -1) { m_scrollLevel = -1; }
+
+                    m_scrollLevel--;
+                    if (m_scrollLevel == 0)
+                    {
+                        m_BluePortal.transform.localScale = m_DefaultPortalScale;
+                    }
+                    if (m_scrollLevel == -1)
+                    {
+                        m_BluePortal.transform.localScale = m_MinPortalScale;
+                    }
+                }
+                Previsualization(m_BluePortal);
+            }
+            if (Input.GetMouseButton(m_OrangeShootMouseButton))
+            {
+                if (scroll > 0f)
+                {
+                    m_scrollLevel++;
+                    if (m_scrollLevel > 1) { m_scrollLevel = 1; }
+
+                    if (m_scrollLevel == 1)
+                    {
+                        m_OrangePortal.transform.localScale = m_MaxPortalScale;
+                    }
+                    if (m_scrollLevel == 0)
+                    {
+                        m_OrangePortal.transform.localScale = m_DefaultPortalScale;
+                    }
+                }
+                else if (scroll < 0f)
+                {
+                    if (m_scrollLevel < -1) { m_scrollLevel = -1; }
+
+                    m_scrollLevel--;
+                    if (m_scrollLevel == 0)
+                    {
+                        m_OrangePortal.transform.localScale = m_DefaultPortalScale;
+                    }
+                    if (m_scrollLevel == -1)
+                    {
+                        m_OrangePortal.transform.localScale = m_MinPortalScale;
+                    }
+                }
+                Previsualization(m_OrangePortal);
+            }
+            if (Input.GetMouseButtonUp(m_BlueShootMouseButton))
+            {
                 Shoot(m_BluePortal);
-            if (Input.GetMouseButtonDown(m_OrangeShootMouseButton))
+            }
+            if (Input.GetMouseButtonUp(m_OrangeShootMouseButton))
+            {
                 Shoot(m_OrangePortal);
+            }
         }
+
         if (CanAttachObject())
             AttachObject();
 
@@ -160,7 +238,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Shoot(Portal _Portal)
     {
-        SetShootAnimation();
+        //SetShootAnimation();
 
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
@@ -180,18 +258,43 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SetShootAnimation()
+    private void Previsualization(Portal _Portal)
     {
-        m_Animation.Stop();
-        m_Animation.CrossFade(m_ShootAnimationClip.name, 0.19f);
-    }
-    public void SetIdleAnimation()
-    {
-        if (!m_Animation.IsPlaying(m_IdleAnimationClip.name))
+
+        Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_ShootMaxDist, _Portal.m_ValidPortalLayerMask.value, QueryTriggerInteraction.Ignore))
         {
-            m_Animation.CrossFade(m_IdleAnimationClip.name, 0.19f);
+            if (l_RaycastHit.collider.CompareTag("DrawableWall"))
+            {
+
+                if (_Portal.IsValidPosition(l_RaycastHit.point, l_RaycastHit.normal))
+                {
+                    _Portal.transform.position = l_RaycastHit.point;
+                    _Portal.transform.rotation = Quaternion.LookRotation(l_RaycastHit.normal);
+
+                    _Portal.gameObject.SetActive(true);
+                }
+                else
+                {
+                    _Portal.gameObject.SetActive(false);
+                }
+            }
         }
     }
+
+    //public void SetShootAnimation()
+    //{
+    //    m_Animation.Stop();
+    //    m_Animation.CrossFade(m_ShootAnimationClip.name, 0.19f);
+    //}
+    //public void SetIdleAnimation()
+    //{
+    //    if (!m_Animation.IsPlaying(m_IdleAnimationClip.name))
+    //    {
+    //        m_Animation.CrossFade(m_IdleAnimationClip.name, 0.19f);
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider other)
     {

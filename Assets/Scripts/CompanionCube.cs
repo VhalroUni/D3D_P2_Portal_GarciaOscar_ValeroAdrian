@@ -12,7 +12,7 @@ public class CompanionCube : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        Portal l_Portal = GetComponent<Portal>();
+        Portal l_Portal = other.GetComponent<Portal>();
         if (other.CompareTag("Portal"))
         {
             if (CanTeleport(l_Portal))

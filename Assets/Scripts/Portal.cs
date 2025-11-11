@@ -27,6 +27,7 @@ public class Portal : MonoBehaviour
         float l_DisatnceToPortal = Vector3.Distance(m_MirrorPortal.transform.position,
         m_MirrorPortal.m_Camera.transform.position);
         m_MirrorPortal.m_Camera.nearClipPlane = l_DisatnceToPortal + m_NearCameraOffset;
+
     }
 
     public bool IsValidPosition(Vector3 Position, Vector3 Normal)
