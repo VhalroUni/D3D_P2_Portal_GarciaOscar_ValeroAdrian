@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Turret : MonoBehaviour
 {
@@ -12,23 +14,39 @@ public class Turret : MonoBehaviour
         float l_DotAngle = Vector3.Dot(transform.up, Vector3.up);
         if (l_DotAngle < Mathf.Cos(m_MaxAlifeAngle * Mathf.Deg2Rad))
         {
-            m_LineRenderer.gameObject.SetActive(false);
+            Die();
         }
         else
         {
-            m_LineRenderer.gameObject.SetActive(true);
-            float l_Distance = m_MaxDistance;
-            Ray l_Ray = new Ray(m_LineRenderer.transform.position, m_LineRenderer.transform.forward);
-            if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_MaxDistance, m_LayerMask.value, QueryTriggerInteraction.Ignore))
+            if (m_LineRenderer != null)
             {
-                l_Distance = l_RaycastHit.distance;
-                if (l_RaycastHit.collider.CompareTag("RefractionCube"))
+                m_LineRenderer.gameObject.SetActive(true);
+                float l_Distance = m_MaxDistance;
+                Ray l_Ray = new Ray(m_LineRenderer.transform.position, m_LineRenderer.transform.forward);
+                if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_MaxDistance, m_LayerMask.value, QueryTriggerInteraction.Ignore))
                 {
-                    l_RaycastHit.collider.GetComponent<RefractionCube>().Reflect();
+                    l_Distance = l_RaycastHit.distance;
+                    if (l_RaycastHit.collider.CompareTag("RefractionCube"))
+                    {
+                        l_RaycastHit.collider.GetComponent<RefractionCube>().Reflect();
+                    }
+                    if (l_RaycastHit.collider.CompareTag("Player"))
+                    {
+                        l_RaycastHit.collider.GetComponent<PlayerController>().Die();
+                    }
+                    if (l_RaycastHit.collider.CompareTag("Turret"))
+                    {
+                        l_RaycastHit.collider.GetComponent<Turret>().Die();
+                    }
                 }
+                Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);
+                m_LineRenderer.SetPosition(1, l_Position);
             }
-            Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);
-            m_LineRenderer.SetPosition(1, l_Position);
-        }        
+        }
+    }
+
+    public void Die()
+    {
+        GameObject.Destroy(m_LineRenderer);
     }
 }

@@ -6,6 +6,12 @@ public class CompanionCube : MonoBehaviour
     public float m_PortalDistance = 1.5f;
     public float m_MaxAngleToTeleport = 75f;
     bool m_AttachedObject = false;
+
+    [Header("Cube Size")]
+    public Vector3 m_MaxCubeScale = new Vector3(2f, 2f, 2f);
+    public Vector3 m_MinCubeScale = new Vector3(0.5f, 0.5f, 0.5f);
+    public Vector3 m_DefaultCubeScale = new Vector3(1f, 1f, 1f);
+    int m_CubeLevelSize = 0;
     private void Awake()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
@@ -21,6 +27,15 @@ public class CompanionCube : MonoBehaviour
     }
     bool CanTeleport(Portal _Portal)
     {
+        float l_InternalScale = _Portal.transform.localScale.x;
+        if (l_InternalScale == 1f && m_CubeLevelSize == 1)
+        {
+            return false;
+        }
+        if (l_InternalScale == 0.5f && m_CubeLevelSize >= 0)
+        {
+            return false;
+        }
         float l_DotValue = Vector3.Dot(_Portal.transform.forward, - m_Rigidbody.linearVelocity.normalized);
         return !m_AttachedObject && l_DotValue > Mathf.Cos(m_MaxAngleToTeleport * Mathf.Deg2Rad);
     }
@@ -39,7 +54,37 @@ public class CompanionCube : MonoBehaviour
         m_Rigidbody.linearVelocity=_Portal.m_MirrorPortal.transform.TransformDirection(l_LocalVelocity);
 
         float l_Scale = _Portal.m_MirrorPortal.transform.localScale.x / _Portal.transform.localScale.x;
-        m_Rigidbody.transform.localScale = Vector3.one * l_Scale * m_Rigidbody.transform.localScale.x;
+        float l_InternalScale = _Portal.transform.localScale.x;
+        Debug.Log("Internal Scale: " + l_InternalScale);
+        Debug.Log("Scale: " + l_Scale);
+        if (l_Scale == 2f)
+        {
+            m_CubeLevelSize++;
+            if (m_CubeLevelSize > 1) {m_CubeLevelSize = 1; }
+
+            if (m_CubeLevelSize == 1)
+            {
+                transform.localScale = m_MaxCubeScale;
+            }
+            if (m_CubeLevelSize == 0)
+            {
+                transform.localScale = m_DefaultCubeScale;
+            }
+        }
+        if (l_Scale == 0.5f)
+        {
+            if (m_CubeLevelSize < -1) { m_CubeLevelSize = -1; }
+
+            m_CubeLevelSize--;
+            if (m_CubeLevelSize == 0)
+            {
+                transform.localScale = m_DefaultCubeScale;
+            }
+            if (m_CubeLevelSize == -1)
+            {
+                transform.localScale = m_MinCubeScale;
+            }
+        }
     }
 
     public void SetAttachedObject(bool AttachedObject)

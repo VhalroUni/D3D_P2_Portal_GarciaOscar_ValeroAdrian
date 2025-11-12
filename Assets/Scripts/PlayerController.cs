@@ -21,10 +21,14 @@ public class PlayerController : MonoBehaviour
     public bool m_UseInvertedPitch;
     public CharacterController m_CharacterController;
     float m_VerticalSpeed = 0.0f;
+
+    [Header("Spawn")]
+    public Transform m_SpawnPoint;
     Vector3 m_StartPosition;
     Vector3 l_Position;
     Quaternion m_StartRotation;
 
+    [Header("Camera")]
     public Camera m_Camera;
     bool m_AngleLocked = false;
     public float m_Speed;
@@ -84,6 +88,11 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        m_StartPosition = m_SpawnPoint.position;
+        m_StartRotation = m_SpawnPoint.rotation;
+
+        transform.position = m_StartPosition;
+        transform.rotation = m_StartRotation;
     }
     void Update()
     {
@@ -307,7 +316,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    
+
     bool CanTeleport(Portal _Portal)
     {
         float l_DotValue = Vector3.Dot(_Portal.transform.forward, -m_MovementDirection);
@@ -338,7 +347,7 @@ public class PlayerController : MonoBehaviour
             Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_ShootMaxDist, m_ValidAttachObjectsLayerMask.value, QueryTriggerInteraction.Ignore))
             {
-                if (l_RaycastHit.collider.CompareTag("Cube"))
+                if (l_RaycastHit.collider.CompareTag("Cube") || l_RaycastHit.collider.CompareTag("Turret") || l_RaycastHit.collider.CompareTag("RefractionCube"))
                 {
                     AttachObject(l_RaycastHit.rigidbody);
                 }
@@ -394,5 +403,10 @@ public class PlayerController : MonoBehaviour
         m_AttachedObjectRigidbody.GetComponent<CompanionCube>().SetAttachedObject(false);
         m_AttachedObjectRigidbody = null;
 
+    }
+
+    public void Die()
+    {
+        
     }
 }

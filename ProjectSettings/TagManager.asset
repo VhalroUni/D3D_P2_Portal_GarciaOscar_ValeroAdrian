@@ -8,6 +8,8 @@ TagManager:
   - Cube
   - RefractionCube
   - DrawableWall
+  - Laser
+  - Turret
   layers:
   - Default
   - TransparentFX
