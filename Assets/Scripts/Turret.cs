@@ -31,7 +31,7 @@ public class Turret : MonoBehaviour
                     }
                     if (l_RaycastHit.collider.CompareTag("Player"))
                     {
-                        l_RaycastHit.collider.GetComponent<PlayerController>().Die();
+                        l_RaycastHit.collider.GetComponent<PlayerController>().Restart();
                     }
                     if (l_RaycastHit.collider.CompareTag("Turret"))
                     {

@@ -1980,9 +1980,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5731186738557315857}
   serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_Mass: 0.3
+  m_LinearDamping: 0.3
+  m_AngularDamping: 10
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -2018,8 +2018,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.06, y: 1.06, z: 1.06}
-  m_Center: {x: 0, y: 0.6, z: 0}
+  m_Size: {x: 1.06, y: 1.1308304, z: 1.06}
+  m_Center: {x: 0, y: 0.5645848, z: 0}
 --- !u!114 &637723195377246087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2034,6 +2034,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CompanionCube
   m_PortalDistance: 1.5
   m_MaxAngleToTeleport: 75
+  m_MaxCubeScale: {x: 2, y: 2, z: 2}
+  m_MinCubeScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_DefaultCubeScale: {x: 1, y: 1, z: 1}
 --- !u!1 &5841115213812551351
 GameObject:
   m_ObjectHideFlags: 0

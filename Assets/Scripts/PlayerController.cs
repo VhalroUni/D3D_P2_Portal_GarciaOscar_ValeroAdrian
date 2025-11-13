@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_RunKeycode = KeyCode.LeftShift;
     public KeyCode m_GrabKeyCode = KeyCode.E;
     public KeyCode m_GetDamage = KeyCode.K;
+    public KeyCode m_Interact = KeyCode.F;
     public int m_BlueShootMouseButton = 0;
     public int m_OrangeShootMouseButton = 1;
 
@@ -69,7 +70,7 @@ public class PlayerController : MonoBehaviour
     float m_AttachingCurrentTime;
     float m_AttachingTime = 1.5f;
     public float m_AttachingObjectRotationDistanceLerp = 2.0f;
-    bool m_AttachedObject;
+    public bool m_AttachedObject;
     public LayerMask m_ValidAttachObjectsLayerMask;
 
     [Header("Portal")]
@@ -235,6 +236,18 @@ public class PlayerController : MonoBehaviour
         {
             UpdateAttachedObject();
         }
+
+        Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_ShootMaxDist, m_ValidAttachObjectsLayerMask.value, QueryTriggerInteraction.Ignore))
+        {
+            Debug.Log(l_RaycastHit.collider.name);
+            float l_Distance = Vector3.Distance(l_Position, transform.position);
+            if (l_RaycastHit.collider.CompareTag("PortalButton") && Input.GetKeyDown(m_Interact) && l_Distance < 15)
+            {
+                Debug.Log("Interacted with Portal Button");
+                l_RaycastHit.collider.GetComponent<PortalButton>().m_Event.Invoke();
+            }
+        }
     }
     bool CanAttachObject()
     {
@@ -379,6 +392,7 @@ public class PlayerController : MonoBehaviour
             ThrowObject(0.0f);
         }
     }
+
     void ThrowObject(float Force)
     {
         m_AttachedObjectRigidbody.isKinematic = false;
@@ -389,9 +403,11 @@ public class PlayerController : MonoBehaviour
         m_AttachedObjectRigidbody = null;
 
     }
-
-    public void Die()
+    public void Restart()
     {
-        
+        m_CharacterController.enabled = false;
+        transform.position = m_StartPosition;
+        transform.rotation = m_StartRotation;
+        m_CharacterController.enabled = true;
     }
 }

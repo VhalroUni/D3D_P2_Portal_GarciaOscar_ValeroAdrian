@@ -53,7 +53,7 @@ public class RefractionCube : MonoBehaviour
             }
             if (l_RaycastHit.collider.CompareTag("Player"))
             {
-                l_RaycastHit.collider.GetComponent<PlayerController>().Die();
+                l_RaycastHit.collider.GetComponent<PlayerController>().Restart();
             }
         }
         Vector3 l_Position = new Vector3(0.0f, 0.0f, l_Distance);

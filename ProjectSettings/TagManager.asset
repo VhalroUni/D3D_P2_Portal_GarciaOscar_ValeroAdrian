@@ -10,6 +10,7 @@ TagManager:
   - DrawableWall
   - Laser
   - Turret
+  - PortalButton
   layers:
   - Default
   - TransparentFX
