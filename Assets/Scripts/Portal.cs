@@ -22,12 +22,11 @@ public class Portal : MonoBehaviour
 
         Vector3 l_WorldForward = Camera.main.transform.forward;
         Vector3 l_LocalForward = m_OtherPortalTransform.InverseTransformDirection(l_WorldForward);
-        m_MirrorPortal.m_Camera.transform.forward = m_MirrorPortal.transform.InverseTransformDirection(l_LocalForward);
+        m_MirrorPortal.m_Camera.transform.forward = m_MirrorPortal.transform.TransformDirection(l_LocalForward);
 
         float l_DisatnceToPortal = Vector3.Distance(m_MirrorPortal.transform.position,
         m_MirrorPortal.m_Camera.transform.position);
         m_MirrorPortal.m_Camera.nearClipPlane = l_DisatnceToPortal + m_NearCameraOffset;
-
     }
 
     public bool IsValidPosition(Vector3 Position, Vector3 Normal)

@@ -241,8 +241,9 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_ShootMaxDist, m_ValidAttachObjectsLayerMask.value, QueryTriggerInteraction.Ignore))
         {
             Debug.Log(l_RaycastHit.collider.name);
-            float l_Distance = Vector3.Distance(l_Position, transform.position);
-            if (l_RaycastHit.collider.CompareTag("PortalButton") && Input.GetKeyDown(m_Interact) && l_Distance < 15)
+            Debug.Log(l_RaycastHit.collider.tag);
+            float l_Distance = Vector3.Distance(l_RaycastHit.transform.position, transform.position);
+            if (l_RaycastHit.collider.CompareTag("PortalButton") && (l_Distance < 5) && (Input.GetKeyDown(m_Interact)))
             {
                 Debug.Log("Interacted with Portal Button");
                 l_RaycastHit.collider.GetComponent<PortalButton>().m_Event.Invoke();
