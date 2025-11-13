@@ -96,7 +96,6 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        //SetIdleAnimation();
 
         float l_MouseX = Input.GetAxis("Mouse X");
         float l_MouseY = Input.GetAxis("Mouse Y");
@@ -247,7 +246,6 @@ public class PlayerController : MonoBehaviour
     }
     private void Shoot(Portal _Portal)
     {
-        //SetShootAnimation();
 
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
@@ -291,19 +289,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    //public void SetShootAnimation()
-    //{
-    //    m_Animation.Stop();
-    //    m_Animation.CrossFade(m_ShootAnimationClip.name, 0.19f);
-    //}
-    //public void SetIdleAnimation()
-    //{
-    //    if (!m_Animation.IsPlaying(m_IdleAnimationClip.name))
-    //    {
-    //        m_Animation.CrossFade(m_IdleAnimationClip.name, 0.19f);
-    //    }
-    //}
 
     private void OnTriggerEnter(Collider other)
     {

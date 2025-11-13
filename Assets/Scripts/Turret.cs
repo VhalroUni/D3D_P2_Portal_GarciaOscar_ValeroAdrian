@@ -20,7 +20,6 @@ public class Turret : MonoBehaviour
         {
             if (m_LineRenderer != null)
             {
-                m_LineRenderer.gameObject.SetActive(true);
                 float l_Distance = m_MaxDistance;
                 Ray l_Ray = new Ray(m_LineRenderer.transform.position, m_LineRenderer.transform.forward);
                 if (Physics.Raycast(l_Ray, out RaycastHit l_RaycastHit, m_MaxDistance, m_LayerMask.value, QueryTriggerInteraction.Ignore))

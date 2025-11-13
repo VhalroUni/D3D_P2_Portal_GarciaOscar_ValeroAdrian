@@ -27,17 +27,24 @@ public class CompanionCube : MonoBehaviour
     }
     bool CanTeleport(Portal _Portal)
     {
-        float l_InternalScale = _Portal.transform.localScale.x;
-        if (l_InternalScale == 1f && m_CubeLevelSize == 1)
+        if (gameObject.CompareTag("Cube"))
+        {
+            float l_InternalScale = _Portal.transform.localScale.x;
+            if (l_InternalScale == 1f && m_CubeLevelSize == 1)
+            {
+                return false;
+            }
+            if (l_InternalScale == 0.5f && m_CubeLevelSize >= 0)
+            {
+                return false;
+            }
+            float l_DotValue = Vector3.Dot(_Portal.transform.forward, - m_Rigidbody.linearVelocity.normalized);
+            return !m_AttachedObject && l_DotValue > Mathf.Cos(m_MaxAngleToTeleport * Mathf.Deg2Rad);
+        }
+        else
         {
             return false;
         }
-        if (l_InternalScale == 0.5f && m_CubeLevelSize >= 0)
-        {
-            return false;
-        }
-        float l_DotValue = Vector3.Dot(_Portal.transform.forward, - m_Rigidbody.linearVelocity.normalized);
-        return !m_AttachedObject && l_DotValue > Mathf.Cos(m_MaxAngleToTeleport * Mathf.Deg2Rad);
     }
     void Teleport(Portal _Portal)
     {
@@ -55,9 +62,8 @@ public class CompanionCube : MonoBehaviour
 
         float l_Scale = _Portal.m_MirrorPortal.transform.localScale.x / _Portal.transform.localScale.x;
         float l_InternalScale = _Portal.transform.localScale.x;
-        Debug.Log("Internal Scale: " + l_InternalScale);
-        Debug.Log("Scale: " + l_Scale);
-        if (l_Scale == 2f)
+
+        if (l_Scale == 2f || l_Scale == 4f)
         {
             m_CubeLevelSize++;
             if (m_CubeLevelSize > 1) {m_CubeLevelSize = 1; }
@@ -71,7 +77,7 @@ public class CompanionCube : MonoBehaviour
                 transform.localScale = m_DefaultCubeScale;
             }
         }
-        if (l_Scale == 0.5f)
+        if (l_Scale == 0.5f || l_Scale == 0.25f)
         {
             if (m_CubeLevelSize < -1) { m_CubeLevelSize = -1; }
 
